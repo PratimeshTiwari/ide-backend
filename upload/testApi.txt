@@ -1,0 +1,185 @@
+## All CURL Commands - Complete MVP Test Suite
+
+### **STEP 1: User Registration & Login**
+
+**Create a user:**
+```bash
+curl -X POST http://localhost:4000/api/users \
+  -H "Content-Type: application/json" \
+  -d '{
+    "firstName": "John",
+    "lastName": "Doe",
+    "email": "john@example.com",
+    "password": "password123",
+    "mobile": "1234567890"
+  }'
+```
+
+**Login (save the token from response):**
+```bash
+curl -X POST http://localhost:4000/api/users/login \
+  -H "Content-Type: application/json" \
+  -d '{
+    "email": "john@example.com",
+    "password": "password123"
+  }'
+```
+
+---
+
+### **STEP 2: Projects CRUD**
+
+**Create a project:**
+```bash
+curl -X POST http://localhost:4000/api/projects \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "name": "My First Project",
+    "description": "Test project",
+    "projectSlug": "my-first-project"
+  }'
+```
+
+**Get all projects for a user (replace USER_ID):**
+```bash
+curl -X GET http://localhost:4000/api/projects/user/USER_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Get single project (replace PROJECT_ID):**
+```bash
+curl -X GET http://localhost:4000/api/projects/PROJECT_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Update project:**
+```bash
+curl -X PUT http://localhost:4000/api/projects/PROJECT_ID \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "name": "Updated Project Name",
+    "description": "Updated description"
+  }'
+```
+
+**Delete project:**
+```bash
+curl -X DELETE http://localhost:4000/api/projects/PROJECT_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+---
+
+### **STEP 3: Files CRUD**
+
+**Create a root folder:**
+```bash
+curl -X POST http://localhost:4000/api/files \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "projectId": "PROJECT_ID",
+    "name": "src",
+    "type": "folder"
+  }'
+```
+
+**Create a nested folder (inside src):**
+```bash
+curl -X POST http://localhost:4000/api/files \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "projectId": "PROJECT_ID",
+    "parentId": "PARENT_FOLDER_ID",
+    "name": "components",
+    "type": "folder"
+  }'
+```
+
+**Create a file inside folder:**
+```bash
+curl -X POST http://localhost:4000/api/files \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "projectId": "PROJECT_ID",
+    "parentId": "FOLDER_ID",
+    "name": "App.js",
+    "type": "file",
+    "content": "import React from \"react\";\n\nfunction App() {\n  return <div>Hello World</div>;\n}\n\nexport default App;",
+    "language": "javascript"
+  }'
+```
+
+**Create another file (CSS):**
+```bash
+curl -X POST http://localhost:4000/api/files \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "projectId": "PROJECT_ID",
+    "parentId": "FOLDER_ID",
+    "name": "App.css",
+    "type": "file",
+    "content": ".App {\n  text-align: center;\n  padding: 20px;\n}",
+    "language": "css"
+  }'
+```
+
+**Get file by ID:**
+```bash
+curl -X GET http://localhost:4000/api/files/FILE_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Update file content:**
+```bash
+curl -X PUT http://localhost:4000/api/files/FILE_ID \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "content": "import React from \"react\";\n\nfunction App() {\n  return <div>Updated Hello World</div>;\n}\n\nexport default App;"
+  }'
+```
+
+**Rename file:**
+```bash
+curl -X PUT http://localhost:4000/api/files/FILE_ID \
+  -H "Content-Type: application/json" \
+  -H "Authorization: Bearer YOUR_TOKEN" \
+  -d '{
+    "name": "AppComponent.js"
+  }'
+```
+
+**Delete file:**
+```bash
+curl -X DELETE http://localhost:4000/api/files/FILE_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+**Delete empty folder:**
+```bash
+curl -X DELETE http://localhost:4000/api/files/FOLDER_ID \
+  -H "Authorization: Bearer YOUR_TOKEN"
+```
+
+---
+
+### **Health Check:**
+```bash
+curl http://localhost:4000/health
+```
+
+---
+
+**Replace placeholders:**
+- `YOUR_TOKEN` - JWT token from login
+- `USER_ID` - User _id from registration/login response
+- `PROJECT_ID` - Project _id from create project response
+- `FOLDER_ID` - Folder _id from create folder response
+- `FILE_ID` - File _id from create file response
+- `PARENT_FOLDER_ID` - Parent folder _id for nested folders/files
